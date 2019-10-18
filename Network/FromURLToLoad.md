@@ -94,20 +94,75 @@ HTTPS 在传输数据之间需要客户端与服务器进行一个握手(TLS/SSL
 2. session ticket
     客户端不再发送 session ID，而是发送一个服务器在上一次对话中发送过来的 session ticket。这个 session ticket 是加密的，只有服务器才能解密。当服务器收到 session ticket 以后，解密后就不必重新生成对话密钥了。
 
+#### GET 和 POST有什么区别
 
+- GET
 
+    读取一个资源，比如 get 一个 HTML 文件，反复读取不应该有对访问数据有副作用。没有副作用被称为“幂等”。
+    因为是 GET 是读取的操作，可以对其进行缓存，这个缓存可以做到浏览器上（彻底避免浏览器发送请求），也可以做到代理上（如 nginx）或者 server 端（用 Etag，至少可以减少宽带消耗）
 
+- POST
 
+    页面里面的 form 表单点击 submit 会发出一个 post 请求让服务器做一件事情，这件事情往往是有副作用的，不幂等的。
 
+GET 和 POST 携带数据的格式也有区别。其实并不是 GET 只能用 URL，而是浏览器直接发出的 GET 只能由一个 URL 触发，所以 GET 上要在 URL 之外带一些参数就只能依靠 URL 上附带 querystring，但是 HTTP 协议本身没有这个限制。
+浏览器的 post 请求都来自于表单提交。每次提交，表单的数据被浏览器用编码到 HTTP 请求的 body 里。浏览器发出的 post 请求的 body 有两种格式 application/x-www-form-urlencoded 用来传输简单的数据，大概就是 "key1=value1&key2=value2"这样的格式。另外一种是传文件，会采用 multipart/form-data 格式。采用后者是因为 application/x-www-form-urlencoded 的编码方式对于文件这种二进制的数据非常低效。
 
+##### REST POST 和 REST PUT
 
+PUT 的实际语义是 replace。rest 规范里面提到的请求提应该是完整的资源，包括 id 在内。服务器应该是先根据请求提供的 id 进行查找。如果存在一个对应 id 的元素。就用请求中的数据整体替换已经存在的资源；如果没有，就用这个 id 对应的资源从【空】替换为 【请求数据】。直观看起来就是创建了。
+POST 是通过一组必要的数据创建出完整的资源。至于到底用 PUT 还是 POST 创建资源。完全要看是不是提前可以知道资源所有的数据。以及是不是完整替换。当想上传一个新资源的时候，其 id 是可以提前知道，同事这个 api 也总是完整的 replace 整个资源。这时的 api 用 PUT 的语义更合适。而对于 id 是服务器自动生成的场景，post 更合适一些。
 
+##### 关于安全性
 
+无论是 GET 还是 POST 都不够安全，因为 HTTP 本身是明文协议。每个 http 请求和返回的每个 byte 都会在网络上传播，不管是 url，header 还是 body。
 
+GET 不安全的原因：携带的私密信息的 url 会在地址栏上，还可以分享给第三方，就非常不安全了。此外，从客户端到服务器端，有大量的中间节点，包括网关、代理等。，他们的 access log 通常会输出完整的 url，比如 nginx 的默认 access log 就是如此。如果 url 上携带敏感数据，就会被记录下来。**就算私密数据在 body 里面，也是可以被记录下来的。**避免泄密的唯一手段就是  https。
 
+##### 关于编码
 
+GET 和 POST 都能用 url 和 body。确切的来说应该是 http 中 url 用什么编码，body 用什么编码。
 
+url 只能支持 ASCII 的说法源于[RFC1738](https://www.ietf.org/rfc/rfc1738.txt)。
+实际上这里的规定的仅仅是 ASCII 的子集[a-zA-Z0-9$-_.+!*'(),]。他们是可以”不经编码“在 url 中使用的。比如尽管空格也是 ASCII 字符，但是不能直接在 url 中使用。
 
+HTTP Body 相对好些，因为有个 Content-Type 来比较明确的定义。这里 Content-Type 会同时定义请求 body 的格式（application/x-www-form-urlencoded）和字符编码（utf-8）。
+
+POST 请求就是表单提交，而表单提交只有 application/x-www-form-urlencoded。
+针对简单的 key-value 场景；和 multipart/form-data。
+
+##### 浏览器的 POST 需要发两个请求吗
+
+客户端可以利用 HTTP 的 continued 协议来这样做：客户端总是先发送所有请求头给服务器，让服务器校验，如果通过了，服务器恢复 "100-continue"，客户端再把剩下的数据发送服务器。如果请求被拒了，服务器就回复个 400 之类的错误。交互就终止了。这样就避免浪费带宽传请求体。但是代价就是会多一次 round trip。如果刚好请求体的数据也不多，那么一次性全部发送给服务器可能反而更好。
+
+基于此，客户端就能做一些优化，比如内部设定一次 POST 的数据超过 1KB 就先只发送“请求头”，否则就一次性全发。客户端甚至可以做一些 Adaptive 的策略。统计发送成功率，如果成功率很高，就总是全部发等等。不同浏览器，不同的客户端（curl, postman)可以有各自的不停的方案。不管怎样做，优化目的总是提高数据吞吐量和降低带宽做一个折衷。
+
+##### 请求报头
+
+Accept 用于指定客户端用于接受哪些类型的信息，Accept-Encoding 与 Accept 类似，它用于指定接受的编码方式。Connection 设置为 keep-alive 用于告诉客户端本次 HTTP 请求之后并不需要关闭 TCP 连接，这样可以使下次 HTTP 请求使用相同的 TCP 通道，节省 TCP 连接建立的时间。
+
+##### 状态码
+
+- 1xx：信息响应
+- 2xx：成功响应
+- 3xx：重定向–要完成请求必须进行更进一步的操作
+- 4xx：客户端错误–请求有语法错误或请求无法实现
+- 5xx：服务器端错误–服务器未能实现合法的请求
+
+| 状态码 | 意义 |
+|:----: | :-------: |
+| 100 | Continue 继续, 客户端应继续其请求|
+| 204 | No Content 服务器成功处理了请求，但不需要返回任何实体内容，并且希望返回更新了的元信息 |
+| 301 | Moved Permanently永久移动。请求的资源已被永久的移动到新URI，返回信息会包括新的URI，浏览器会自动定向到新URI。今后任何新的请求都应使用新的URI代替|
+| 302 | Found 临时移动。与301类似。但资源只是临时被移动。客户端应继续使用原有 URI|
+| 304 | Not Modified 未修改。所请求的资源未修改，服务器返回此状态码时，不会返回任何资源。客户端通常会缓存访问过的资源，通过提供一个头信息指出客户端希望只返回在指定日期之后修改的资源|
+| 400 Bad Request | 1、语义有误，当前请求无法被服务器理解。除非进行修改，否则客户端不应该重复提交这个请求。
+2、请求参数有误。|
+| 401 Unauthorized | 当前请求需要用户验证。 |
+| 403 Forbidden | 服务器已经理解请求，但是拒绝执行它 |
+| 404  Not Found | 请求失败，请求所希望得到的资源未被在服务器上发现 |
+| 422 Unprocessable Entity | 请求格式良好，但由于语义错误而无法遵循。 |
+| 500 Internal Server Error | 服务器遇到了不知道如何处理的情况。 |
 
 
 
@@ -126,3 +181,7 @@ HTTPS 在传输数据之间需要客户端与服务器进行一个握手(TLS/SSL
 [从输入URL到页面加载发生了什么](https://segmentfault.com/a/1190000006879700)
 [TCP 的特性](https://hit-alibaba.github.io/interview/basic/network/TCP.html)
 [图解SSL/TLS协议](http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html)
+[socket连接和http连接的区别](https://blog.csdn.net/wwd0501/article/details/52412396)
+[WebSocket 是什么原理？为什么可以实现持久连接？](https://www.zhihu.com/question/20215561)
+[GET 和 POST 到底有什么区别？](https://www.zhihu.com/question/28586791)
+[http 状态码](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Status)
