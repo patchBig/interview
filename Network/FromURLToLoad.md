@@ -164,11 +164,38 @@ Accept 用于指定客户端用于接受哪些类型的信息，Accept-Encoding 
 | 422 Unprocessable Entity | 请求格式良好，但由于语义错误而无法遵循。 |
 | 500 Internal Server Error | 服务器遇到了不知道如何处理的情况。 |
 
+##### HTTP 缓存
 
+重用已获取的资源能够有效的提升网站与应用的性能。Web 缓存能够减少延迟与网络阻塞，进而减少显示某个资源所用的时间。
 
+缓存是一种保存资源副本并在下次请求时直接使用该副本的技术。当 Web 缓存发现请求的资源已经被存储，它会拦截请求，返回该资源的拷贝，而不会去源服务器重新下载。这样带来的好处是：缓解服务器端压力，提升性能。对于网站来说，缓存是到达高性能的重要组成部分。缓存需要合理配置，因为并不是所有资源都是永久不变的，重要的是对一个资源的缓存应截止到其下一次发生改变。
 
+缓存的种类有很多，其大致可以归为两类：私有与共享缓存。共享缓存存储的响应能够被多个用户使用。私有缓存只能用于单独用户。
 
+###### 缓存控制
 
+> cache-control 头
+
+1. 禁止进行缓存 Cache-control: no-store
+缓存中不得存储任何关于客户端请求和服务器响应的内容。每次都由客户端发起的请求都会下载完整的响应内容。
+
+2. 强制确认缓存 Cache-Control: no-cache
+每次有请求发出时，缓存会将此请求发到服务器（该请求应该会带有本地缓存相关的验证字段），服务器端会验证请求中所描述的缓存是否过期，若未过期（实际就是返回 304），则缓存才使用本地缓存副本。
+
+3. 私有缓存与公共缓存 Cache-Control: private Cache-Control: public
+"public" 指令表示该响应可以被任何中间人（中间代理或 CDN 等）缓存。若指定了"public"，则一些通常被中间人缓存的页面（应为默认是 private）（比如带有 HTTP 验证信息(账号密码)的页面或某些特定状态码的页面），将会被其缓存。
+而 private 则表示该响应是专门用于某单个用户的，中间人不能缓存此响应，该响应只能用于浏览器私有缓存中。
+
+4. 缓存过期机制 Cache-Control: max-age=31536000
+过期机制中，最重要的指令是 "max-age=<seconds>"，表示资源能够被缓存（保持新鲜）的最大时间。相对 Expire 而言，max-age 是距离请求发起时间的秒数。针对应用中那些不会更改的文件，通常可以手动设置一定的时长已保证缓存有效。
+
+###### 新鲜度
+
+当一个资源被缓存存储后，该资源应该可以被永久存储在缓存中，由于缓存只有有限的空间存储资源副本，所以缓存会定期地将一些副本删除，这个过程叫做缓存驱逐。另一方面，服务器上的资源进行了更新，那么缓存中的对应资源也应该被更新，由于 HTTP 是 C/S 模式的协议，服务器上更新一个资源时，不可能直接通知客户端更新缓存，所以双方必须为该资源约定一个过期时间，在改过期时间之前，该资源副本就是新鲜的，当过了过期时间后，该资源则变为陈旧的，算法驱逐用于将陈旧的资源替换为新鲜的。注意一个陈旧的资源是不会被直接清除或忽略的，当客户端发起一个请求时，缓存检索到已有一个对应的陈旧的资源，则缓存就会先此请求附加上一个 If-None-Match 头，然后发给目标服务器，以此来检查资源副本是否是依然新鲜的，若服务器返回了 304 (Not Modified)（该响应不会有带有实体信息），则表示此资源副本是新鲜的，这样一来，可以节省一些带宽。若服务器通过 If-None-Match 或 If-Modified-Since 判断后发现已过期，那么会带有该资源的实体内容返回。
+
+##### 浏览器解析渲染页面
+
+The browser parses out the HTML source code (tag soup) and constructs a DOM tree - a data representation where every HTML tag has a corresponding node in the tree and text chunks between tags get a text node representation too. The node in the DOM tree is the documentElement (the <html> tag).
 
 
 
@@ -177,8 +204,9 @@ Accept 用于指定客户端用于接受哪些类型的信息，Accept-Encoding 
 
 
 参考链接:
-[简述TCP连接的建立与释放](https://zhuanlan.zhihu.com/p/24860403)
 [从输入URL到页面加载发生了什么](https://segmentfault.com/a/1190000006879700)
+[http 缓存](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Caching_FAQ)
+[简述TCP连接的建立与释放](https://zhuanlan.zhihu.com/p/24860403)
 [TCP 的特性](https://hit-alibaba.github.io/interview/basic/network/TCP.html)
 [图解SSL/TLS协议](http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html)
 [socket连接和http连接的区别](https://blog.csdn.net/wwd0501/article/details/52412396)
