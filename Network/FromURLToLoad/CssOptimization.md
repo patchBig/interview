@@ -68,7 +68,7 @@ Paint 的工作就是把文档中用户可见的那一部分展示给用户。Pa
 
 ## 无线性能优化：Composite
 
-![图片](../img/从%20Nodes%20到%20LayoutObjects.png)
+![图片](\img\FromNodesToLayoutObjects.png)
 
 ### 从 Nodes 到 LayoutObjects
 
