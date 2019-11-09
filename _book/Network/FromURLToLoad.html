@@ -1,0 +1,579 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>从输入 URL 到页面加载发生了什么 · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="FromURLToLoad/DNSAnalysis.html" />
+    
+    
+    <link rel="prev" href="./" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../CSS/">
+            
+                <a href="../CSS/">
+            
+                    
+                    CSS
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../CSS/repaint_reflow_relayout_restyle.html">
+            
+                <a href="../CSS/repaint_reflow_relayout_restyle.html">
+            
+                    
+                    重绘重排
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" >
+            
+                <span>
+            
+                    
+                    JS
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../HTML5/README.md">
+            
+                <span>
+            
+                    
+                    HTML
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../HTML5/NewFeature.html">
+            
+                <a href="../HTML5/NewFeature.html">
+            
+                    
+                    HTML5  新特性
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Network
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="1.5.1" data-path="FromURLToLoad.html">
+            
+                <a href="FromURLToLoad.html">
+            
+                    
+                    从输入 URL 到页面加载发生了什么
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1.1" data-path="FromURLToLoad/DNSAnalysis.html">
+            
+                <a href="FromURLToLoad/DNSAnalysis.html">
+            
+                    
+                    DNS 解析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.2" data-path="FromURLToLoad/TCPLink.html">
+            
+                <a href="FromURLToLoad/TCPLink.html">
+            
+                    
+                    TCP 连接
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.3" data-path="FromURLToLoad/SendRequest.html">
+            
+                <a href="FromURLToLoad/SendRequest.html">
+            
+                    
+                    发送 http 请求
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.4" data-path="FromURLToLoad/HandleRequest.html">
+            
+                <a href="FromURLToLoad/HandleRequest.html">
+            
+                    
+                    服务器处理请求并返回 HTTP 报文
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.5" data-path="FromURLToLoad/ClientAnalyze.html">
+            
+                <a href="FromURLToLoad/ClientAnalyze.html">
+            
+                    
+                    浏览器渲染解析页面
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.1.6" data-path="FromURLToLoad/PerformanceOptimization.html">
+            
+                <a href="FromURLToLoad/PerformanceOptimization.html">
+            
+                    
+                    前端性能优化
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1.6.1" data-path="FromURLToLoad/CssOptimization.html">
+            
+                <a href="FromURLToLoad/CssOptimization.html">
+            
+                    
+                    前端性能优化-CSS
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" >
+            
+                <span>
+            
+                    
+                    Handwriting Code
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../Vue/README.md">
+            
+                <span>
+            
+                    
+                    Vue
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="../VUE/VueAnalysis.html">
+            
+                <a href="../VUE/VueAnalysis.html">
+            
+                    
+                    Vue.js 技术揭秘
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" >
+            
+                <span>
+            
+                    
+                    React
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" >
+            
+                <span>
+            
+                    
+                    Vuex
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" >
+            
+                <span>
+            
+                    
+                    Redux
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11" >
+            
+                <span>
+            
+                    
+                    Node
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12" >
+            
+                <span>
+            
+                    
+                    Webpack
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >从输入 URL 到页面加载发生了什么</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="&#x4ECE;&#x8F93;&#x5165;url&#x5230;&#x9875;&#x9762;&#x52A0;&#x8F7D;&#x53D1;&#x751F;&#x4E86;&#x4EC0;&#x4E48;">&#x4ECE;&#x8F93;&#x5165;URL&#x5230;&#x9875;&#x9762;&#x52A0;&#x8F7D;&#x53D1;&#x751F;&#x4E86;&#x4EC0;&#x4E48;</h1>
+<p>&#x5177;&#x4F53;&#x6765;&#x8BF4;&#x6709;&#x4EE5;&#x4E0B;&#x51E0;&#x4E2A;&#x8FC7;&#x7A0B;&#xFF1A;</p>
+<ol>
+<li><a href="FromURLToLoad/DNSAnalysis.html">DNS &#x89E3;&#x6790;</a></li>
+<li><a href="FromURLToLoad/TCPLink.html">TCP &#x8FDE;&#x63A5;</a></li>
+<li><a href="FromURLToLoad/SendRequest.html">&#x53D1;&#x9001; http &#x8BF7;&#x6C42;</a></li>
+<li><a href="FromURLToLoad/HandleRequest.html">&#x670D;&#x52A1;&#x5668;&#x5904;&#x7406;&#x8BF7;&#x6C42;&#x5E76;&#x8FD4;&#x56DE; HTTP &#x62A5;&#x6587;</a></li>
+<li><a href="FromURLToLoad/ClientAnalyze.html">&#x6D4F;&#x89C8;&#x5668;&#x6E32;&#x67D3;&#x89E3;&#x6790;&#x9875;&#x9762;</a></li>
+<li>&#x8FDE;&#x63A5;&#x7ED3;&#x675F;</li>
+</ol>
+<p>&#x53C2;&#x8003;&#x94FE;&#x63A5;:</p>
+<ul>
+<li><a href="https://segmentfault.com/a/1190000006879700" target="_blank">&#x4ECE;&#x8F93;&#x5165;URL&#x5230;&#x9875;&#x9762;&#x52A0;&#x8F7D;&#x53D1;&#x751F;&#x4E86;&#x4EC0;&#x4E48;</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Caching_FAQ" target="_blank">http &#x7F13;&#x5B58;</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/24860403" target="_blank">&#x7B80;&#x8FF0;TCP&#x8FDE;&#x63A5;&#x7684;&#x5EFA;&#x7ACB;&#x4E0E;&#x91CA;&#x653E;</a></li>
+<li><a href="https://hit-alibaba.github.io/interview/basic/network/TCP.html" target="_blank">TCP &#x7684;&#x7279;&#x6027;</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2014/09/illustration-ssl.html" target="_blank">&#x56FE;&#x89E3;SSL/TLS&#x534F;&#x8BAE;</a></li>
+<li><a href="https://blog.csdn.net/wwd0501/article/details/52412396" target="_blank">socket&#x8FDE;&#x63A5;&#x548C;http&#x8FDE;&#x63A5;&#x7684;&#x533A;&#x522B;</a></li>
+<li><a href="https://www.zhihu.com/question/20215561" target="_blank">WebSocket &#x662F;&#x4EC0;&#x4E48;&#x539F;&#x7406;&#xFF1F;&#x4E3A;&#x4EC0;&#x4E48;&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x6301;&#x4E45;&#x8FDE;&#x63A5;&#xFF1F;</a></li>
+<li><a href="https://www.zhihu.com/question/28586791" target="_blank">GET &#x548C; POST &#x5230;&#x5E95;&#x6709;&#x4EC0;&#x4E48;&#x533A;&#x522B;&#xFF1F;</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Status" target="_blank">http &#x72B6;&#x6001;&#x7801;</a></li>
+<li><a href="https://www.phpied.com/rendering-repaint-reflowrelayout-restyle/" target="_blank">Rendering: repaint, reflow/relayout, restyle</a></li>
+<li><a href="https://xdlrt.github.io/2016/11/05/2016-11-05/" target="_blank">&#x7FFB;&#x8BD1;&#x8BA1;&#x5212;-&#x91CD;&#x7ED8;&#x91CD;&#x6392;&#x91CD;&#x6E32;&#x67D3;</a></li>
+</ul>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: Network">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="FromURLToLoad/DNSAnalysis.html" class="navigation navigation-next " aria-label="Next page: DNS 解析">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"从输入 URL 到页面加载发生了什么","level":"1.5.1","depth":2,"next":{"title":"DNS 解析","level":"1.5.1.1","depth":3,"path":"Network/FromURLToLoad/DNSAnalysis.md","ref":"Network/FromURLToLoad/DNSAnalysis.md","articles":[]},"previous":{"title":"Network","level":"1.5","depth":1,"path":"Network/README.md","ref":"Network/README.md","articles":[{"title":"从输入 URL 到页面加载发生了什么","level":"1.5.1","depth":2,"path":"Network/FromURLToLoad.md","ref":"Network/FromURLToLoad.md","articles":[{"title":"DNS 解析","level":"1.5.1.1","depth":3,"path":"Network/FromURLToLoad/DNSAnalysis.md","ref":"Network/FromURLToLoad/DNSAnalysis.md","articles":[]},{"title":"TCP 连接","level":"1.5.1.2","depth":3,"path":"Network/FromURLToLoad/TCPLink.md","ref":"Network/FromURLToLoad/TCPLink.md","articles":[]},{"title":"发送 http 请求","level":"1.5.1.3","depth":3,"path":"Network/FromURLToLoad/SendRequest.md","ref":"Network/FromURLToLoad/SendRequest.md","articles":[]},{"title":"服务器处理请求并返回 HTTP 报文","level":"1.5.1.4","depth":3,"path":"Network/FromURLToLoad/HandleRequest.md","ref":"Network/FromURLToLoad/HandleRequest.md","articles":[]},{"title":"浏览器渲染解析页面","level":"1.5.1.5","depth":3,"path":"Network/FromURLToLoad/ClientAnalyze.md","ref":"Network/FromURLToLoad/ClientAnalyze.md","articles":[]},{"title":"前端性能优化","level":"1.5.1.6","depth":3,"path":"Network/FromURLToLoad/PerformanceOptimization.md","ref":"Network/FromURLToLoad/PerformanceOptimization.md","articles":[{"title":"前端性能优化-CSS","level":"1.5.1.6.1","depth":4,"path":"Network/FromURLToLoad/CssOptimization.md","ref":"Network/FromURLToLoad/CssOptimization.md","articles":[]}]}]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Network/FromURLToLoad.md","mtime":"2019-11-09T09:46:54.282Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-11-09T09:27:03.316Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

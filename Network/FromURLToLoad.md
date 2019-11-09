@@ -2,13 +2,12 @@
 
 具体来说有以下几个过程：
 
-1. [DNS 解析](DNS Analysis.md)
-2. [TCP 连接](TCP link.md)
-3. [发送 http 请求](Send request.md)
-4. [服务器处理请求并返回 HTTP 报文](Handle request.md)
-5. [浏览器渲染解析页面](Client analyze.md)
+1. [DNS 解析](./FromURLToLoad/DNSAnalysis.html)
+2. [TCP 连接](./FromURLToLoad/TCPLink.html)
+3. [发送 http 请求](./FromURLToLoad/SendRequest.html)
+4. [服务器处理请求并返回 HTTP 报文](./FromURLToLoad/HandleRequest.html)
+5. [浏览器渲染解析页面](./FromURLToLoad/ClientAnalyze.html)
 6. 连接结束
-
 
 参考链接:
 - [从输入URL到页面加载发生了什么](https://segmentfault.com/a/1190000006879700)

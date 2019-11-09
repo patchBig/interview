@@ -140,3 +140,4 @@ DOM 树中的每个 Node 节点都有一个对应的 LayoutObject。 LayoutObjec
 
 - [前端性能优化（CSS动画篇）](https://segmentfault.com/a/1190000000490328#articleHeader11)
 - [无线性能优化：Composite）](https://fed.taobao.org/blog/2016/04/26/performance-composite/)
+- [浏览器渲染详细过程：重绘、重排和 composite 只是冰山一角](https://juejin.im/entry/590801780ce46300617c89b8)
