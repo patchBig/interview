@@ -6,3 +6,5 @@
 *.iml
 out
 gen
+_book/.gitignore
+_book/gitbook.sh
