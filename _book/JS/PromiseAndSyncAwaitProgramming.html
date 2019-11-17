@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Vue.js 技术揭秘 · GitBook</title>
+        <title>Promise 和 Sync Await 异步编程 · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,8 +57,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
+    <link rel="next" href="TaskQueue.html" />
     
-    <link rel="prev" href="../Vue/README.md" />
+    
+    <link rel="prev" href="./" />
     
 
     </head>
@@ -132,9 +134,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3" data-path="../JS/">
+        <li class="chapter " data-level="1.3" data-path="./">
             
-                <a href="../JS/">
+                <a href="./">
             
                     
                     JS
@@ -146,9 +148,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.1" data-path="../JS/PromiseAndSyncAwaitProgramming.html">
+        <li class="chapter active" data-level="1.3.1" data-path="PromiseAndSyncAwaitProgramming.html">
             
-                <a href="../JS/PromiseAndSyncAwaitProgramming.html">
+                <a href="PromiseAndSyncAwaitProgramming.html">
             
                     
                     Promise 和 Sync Await 异步编程
@@ -159,9 +161,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.2" data-path="../JS/TaskQueue.html">
+        <li class="chapter " data-level="1.3.2" data-path="TaskQueue.html">
             
-                <a href="../JS/TaskQueue.html">
+                <a href="TaskQueue.html">
             
                     
                     任务队列-简述
@@ -384,9 +386,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter active" data-level="1.7.1" data-path="VueAnalysis.html">
+        <li class="chapter " data-level="1.7.1" data-path="../VUE/VueAnalysis.html">
             
-                <a href="VueAnalysis.html">
+                <a href="../VUE/VueAnalysis.html">
             
                     
                     Vue.js 技术揭秘
@@ -497,7 +499,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Vue.js 技术揭秘</a>
+        <a href=".." >Promise 和 Sync Await 异步编程</a>
     </h1>
 </div>
 
@@ -512,9 +514,96 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="vuejs-&#x6280;&#x672F;&#x63ED;&#x79D8;">Vue.js &#x6280;&#x672F;&#x63ED;&#x79D8;</h1>
-<p>&#x53C2;&#x8003;&#x94FE;&#x63A5;:
-<a href="https://ustbhuangyi.github.io/vue-analysis/prepare/" target="_blank">Vue.js &#x6280;&#x672F;&#x63ED;&#x79D8;</a></p>
+                                <h1 id="&#x5373;&#x4F7F;&#x4F60;&#x662F;&#x4E94;&#x5C81;&#x7684;&#x5C0F;&#x5B69;&#xFF0C;&#x4E5F;&#x80FD;&#x628A;-asyncawait-&#x548C;-promises-&#x89E3;&#x91CA;&#x7ED9;&#x4F60;&#x542C;">&#x5373;&#x4F7F;&#x4F60;&#x662F;&#x4E94;&#x5C81;&#x7684;&#x5C0F;&#x5B69;&#xFF0C;&#x4E5F;&#x80FD;&#x628A; Async/Await &#x548C; Promises &#x89E3;&#x91CA;&#x7ED9;&#x4F60;&#x542C;</h1>
+<p>Anyone who calls themselves a JavaScript developer has had to, at one point, work with either callback functions, Promises, or more recently, Async/Await syntax. If you&apos;ve been in the game long enough, then you&apos;ve probably seen the translation from the days where nested callbacks were the only way to do asynchronous JavaScript.</p>
+<p>When I first learning and writing JavaScript, there were already a billion guides and tutorials out there explaining how to use them. Yet, many of them were just explaining how to convert between callbacks to Promises, or Promises to Async/Await. Admittedly, for many, that is probably more than enough for them to get along and write code.</p>
+<h2 id="what-dose-asynchronous-mean">What dose &quot;Asynchronous&quot; mean</h2>
+<p>Whilst there&apos;s still the same number of things to do, you can hopefully see how this would be much faster and more efficient. This is exactly the same core concept as asynchronous programming: <strong>you never want to sit around purely waiting for something whilst there are other things you can spend your effort on.</strong></p>
+<p>And we all know that in programming, <strong>waiting</strong> happens pretty damn often -- whether it be waiting for an HTTP Response from a server, filesystem I/O, etc. But your CPU&apos;s execution cycles are precious and should always be spend activity doing something, and not waiting around: hence,
+<strong>Asynchronous Programming</strong>.</p>
+<p>As for the asynchronous functions, first I&apos;ll quickly explain how JavaScript&apos;s type system handles asynchronicity: basically, all results (including void ones) from asynchronous operations must be wrapped in a Promise type.</p>
+<p>In order to have a function return a Promise, you can either</p>
+<ul>
+<li>Explicitly return a Promise i.e.<strong> return new Promise(......)</strong>;</li>
+<li>Add async to the function signature</li>
+<li><em>or both of the above.</em></li>
+</ul>
+<p>if you don&apos;t declare a function as async, then by default JavaScript takes that to mean it is a synchronous function -- and synchronous means no waiting! (this also means you can&apos;t use await at the top level script outside of a function at all).</p>
+<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">chopCarrots</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">let</span> k = <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-number">10000</span>; i++) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> j=<span class="hljs-number">0</span>; j&lt;<span class="hljs-number">10000</span>; j++) {
+      k = <span class="hljs-built_in">Math</span>.pow(k, i * j) / k
+    }
+  }
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Done chopping carrots!&quot;</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">chopOnions</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">let</span> k = <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-number">10000</span>; i++) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> j=<span class="hljs-number">0</span>; j&lt;<span class="hljs-number">10000</span>; j++) {
+      k = <span class="hljs-built_in">Math</span>.pow(k, i * j) / k
+    }
+  }
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Done chopping onions!&quot;</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addOnions</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&apos;Add Onions to pot!&apos;</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addCarrots</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&apos;Add Carrots to pot!&apos;</span>);
+}
+
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">letPotKeepBoiling</span>(<span class="hljs-params">time</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>((resolve) =&gt; setTimeout(() =&gt; {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Pot has boiled for &quot;</span>, time, <span class="hljs-string">&quot; minutes&quot;</span>);
+    resolve();
+  }, time * <span class="hljs-number">100</span>));
+}
+
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">boilPot</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>((resolve) =&gt; setTimeout(() =&gt; {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Done boiling pot!&quot;</span>);
+    resolve();
+  }, <span class="hljs-number">5000</span>));
+}
+
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">makeSoup</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">const</span> pot = boilPot();
+  chopCarrots();
+  chopOnions();
+  <span class="hljs-keyword">await</span> pot;
+  addCarrots();
+  <span class="hljs-keyword">await</span> letPotKeepBoiling(<span class="hljs-number">5</span>);
+  addOnions();
+  <span class="hljs-keyword">await</span> letPotKeepBoiling(<span class="hljs-number">10</span>);
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Your vegetable soup is ready!&quot;</span>);
+}
+
+makeSoup();
+</code></pre>
+<h2 id="what-about-explicit-promises">What about explicit Promises</h2>
+<p>Keep in mind, <strong>the async/await methods are based on promises themselves and hence the two methods are fully compatible.</strong></p>
+<p>Explicit Promise are, in my opinion, the half-way between using old-style callbacks and the new sexy async/await syntax. Alternatively, you can also think of the sexy async/await syntax as nothing more than implicit Promise. After all, async/await came after Promises, which itself came after callbacks.</p>
+<h2 id="async-function-vs-a-function-that-returns-a-promise">Async function vs. a function that returns a Promise</h2>
+<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fn</span>(<span class="hljs-params">obj</span>) </span>{
+  <span class="hljs-keyword">const</span> someProp = obj.someProp
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.resolve(someProp)
+}
+
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">asyncFn</span>(<span class="hljs-params">obj</span>) </span>{
+  <span class="hljs-keyword">const</span> someProp = obj.someProp
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.resolve(someProp)
+}
+
+asyncFn().catch(err =&gt; <span class="hljs-built_in">console</span>.error(<span class="hljs-string">&apos;Catched&apos;</span>)) <span class="hljs-comment">// =&gt; &apos;Catched&apos;</span>
+fn().catch(err =&gt; <span class="hljs-built_in">console</span>.error(<span class="hljs-string">&apos;Catched&apos;</span>)) <span class="hljs-comment">// =&gt; TypeError: Cannot read property &apos;someProp&apos; of undefined</span>
+</code></pre>
+<p>As you can see, both of the functions above have the same body in which we try access a property of an argument that is undefined in both cases. the only difference between the two functions is that asyncFn is declared with the async keyword.</p>
+<p>This means that JavaScript will make sure that the asyncFn will return with a Promise (either resolved or rejected) even if an error occured in it, in our case calling our .catch() block.</p>
 
                                 
                                 </section>
@@ -542,10 +631,14 @@
 
             
                 
-                <a href="../Vue/README.md" class="navigation navigation-prev navigation-unique" aria-label="Previous page: Vue">
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: JS">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
+                
+                <a href="TaskQueue.html" class="navigation navigation-next " aria-label="Next page: 任务队列-简述">
+                    <i class="fa fa-angle-right"></i>
+                </a>
                 
             
         
@@ -554,7 +647,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Vue.js 技术揭秘","level":"1.7.1","depth":2,"next":{"title":"React","level":"1.8","depth":1,"ref":"","articles":[]},"previous":{"title":"Vue","level":"1.7","depth":1,"path":"Vue/README.md","ref":"Vue/README.md","articles":[{"title":"Vue.js 技术揭秘","level":"1.7.1","depth":2,"path":"VUE/VueAnalysis.md","ref":"VUE/VueAnalysis.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"VUE/VueAnalysis.md","mtime":"2019-11-17T05:00:07.017Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-11-17T05:02:21.067Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Promise 和 Sync Await 异步编程","level":"1.3.1","depth":2,"next":{"title":"任务队列-简述","level":"1.3.2","depth":2,"path":"JS/TaskQueue.md","ref":"JS/TaskQueue.md","articles":[]},"previous":{"title":"JS","level":"1.3","depth":1,"path":"JS/README.md","ref":"JS/README.md","articles":[{"title":"Promise 和 Sync Await 异步编程","level":"1.3.1","depth":2,"path":"JS/PromiseAndSyncAwaitProgramming.md","ref":"JS/PromiseAndSyncAwaitProgramming.md","articles":[]},{"title":"任务队列-简述","level":"1.3.2","depth":2,"path":"JS/TaskQueue.md","ref":"JS/TaskQueue.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"JS/PromiseAndSyncAwaitProgramming.md","mtime":"2019-11-17T05:00:07.009Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-11-17T05:02:21.067Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
