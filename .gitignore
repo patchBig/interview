@@ -8,3 +8,4 @@ out
 gen
 _book/.gitignore
 _book/gitbook.sh
+node_modules

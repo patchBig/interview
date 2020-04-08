@@ -1,0 +1,78 @@
+@font-face {
+  font-family: 'kw-icon';
+  src:  url('fonts/kw-icon.eot?c0nu6x');
+  src:  url('fonts/kw-icon.eot?c0nu6x#iefix') format('embedded-opentype'),
+    url('fonts/kw-icon.ttf?c0nu6x') format('truetype'),
+    url('fonts/kw-icon.woff?c0nu6x') format('woff'),
+    url('fonts/kw-icon.svg?c0nu6x#kw-icon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="kw-icon-"], [class*=" kw-icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'kw-icon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.kw-icon-replay:before {
+  content: "\e906";
+}
+.kw-icon-play-next:before {
+  content: "\e907";
+}
+.kw-icon-exam:before {
+  content: "\e905";
+}
+.kw-icon-success:before {
+  content: "\e902";
+}
+.kw-icon-circle:before {
+  content: "\e904";
+}
+.kw-icon-video:before {
+  content: "\e903";
+}
+.kw-icon-work:before {
+  content: "\e900";
+}
+.kw-icon-leaning:before {
+  content: "\e901";
+}
+.kw-icon-back:before {
+  content: "\e908";
+}
+.kw-icon-copy:before {
+  content: "\e909";
+}
+.kw-icon-live:before {
+  content: "\e90a";
+}
+.kw-icon-press:before {
+  content: "\e90b";
+}
+.kw-icon-decoration:before {
+  content: "\e90c";
+}
+.kw-icon-headset:before {
+  content: "\e90d";
+}
+.kw-icon-lock:before {
+  content: "\e90e";
+}
+.kw-icon-arrow:before {
+  content: "\e90f";
+}
+.kw-icon-list-arrow:before {
+  content: "\e910";
+}

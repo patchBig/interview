@@ -105,3 +105,62 @@ fn().catch(err => console.error('Catched')) // => TypeError: Cannot read propert
 As you can see, both of the functions above have the same body in which we try access a property of an argument that is undefined in both cases. the only difference between the two functions is that asyncFn is declared with the async keyword.
 
 This means that JavaScript will make sure that the asyncFn will return with a Promise (either resolved or rejected) even if an error occured in it, in our case calling our .catch() block.
+
+## Promise methods
+
+### Promise.all(iterable)
+
+```js
+const promise1 = Promise.resolve(1);
+const promise2 = 2;
+const promise3 = new Promise((resolve, reject) => {
+  setTimeout(() => resolve(3), 1000);
+});
+Promise.all([promise1, promise2, promise3])
+  .then((values) => {
+    console.log(values);
+  });
+```
+
+If some of them are rejected, then we won't get any resolved value. Instead we will get whatever error value is returned by the rejected promises. It will stop at the first rejected promise and send that value to the callback of catch function.
+
+```js
+const promise1 = Promise.resolve(1);
+const promise2 = Promise.reject(2);
+const promise3 = new Promise((resolve, reject) => {
+  setTimeout(() => reject(3), 1000);
+});
+Promise.all([promise1, promise2, promise3])
+  .then((values) => {
+    console.log(values);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+```
+
+### Promise.allSettled
+
+Promise.allSettled returns a promise that resolves after all the given promises are resolved or rejected. It takes an iterable object with a collection of promises, for example, an array of promises. The resolved value of the returned promise is an array of the final status of each promise.
+
+```js
+const promise1 = Promise.resolve(1);
+const promise2 = Promise.reject(2);
+const promise3 = new Promise((resolve, reject) => {
+  setTimeout(() => reject(3), 1000);
+});
+Promise.allSettled([promise1, promise2, promise3])
+  .then((values) => {
+    console.log(values);
+  })
+```
+
+For example, the code above will log `{status: 'fulfilled', value: 1}, {status: 'rejected', reason: 2}, {status: 'rejected', reason: 3}`
+
+### Promise.reject
+
+Promise.reject returns a promise that's rejected with a reason. It's useful to reject a promise with an object that's an instance of Error.
+
+### Promise.resolve
+
+Promise.resolve returns a promise that's resolved to the value that's passed into the argument of the resolve function.

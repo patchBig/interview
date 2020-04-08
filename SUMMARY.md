@@ -26,3 +26,4 @@
 * [Redux]()
 * [Node]()
 * [Webpack]()
+* [Medium](Medium/README.md)
