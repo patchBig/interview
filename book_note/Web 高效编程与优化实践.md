@@ -226,3 +226,168 @@ WASM 为什么非得是强类型的呢？因为它要转成汇编，汇编里面
 - 函数返回值类型是要确定的。
 
 ## 理解 JS 与多线程
+
+### OS 的任务调度
+
+1. 交互式进程
+需要有大量的交互，如 vi 编辑器，大部分时间处于休眠状态，但是要求响应要快。
+2. 批处理进程
+运行在后台，如编译程序，需要占用大量的系统资源，但是可以慢点。
+3. 实时进程
+需要立即响应并执行，如视频播放器软件，它的优先级最高。
+
+### 任务调度方式
+
+- 实时进程或者说它的实时线程的优先级最高，先来先运行，直到执行完了，才执行下一个实时进程。
+- 对于普通线程使用时间片轮询，每个线程分配一个时间片，当前线程用完这个时间片还没执行完，就排到当前优先级一样的线程队列的队尾。
+
+### 线程同步
+
+由于 Web Workers 是不可以操作 DOM 的。线程同步主要是靠锁来实现的，锁可以分成三种：
+
+1. 互斥锁
+在改变某个 DOM 元素的高度时，先把这块代码的执行给锁住了，只有执行完了才能释放这把锁，其他线程运行到这里的时候也要去申请那把锁，但是由于这把锁没有被释放，所以她就堵塞在那里了，只有等到锁被释放了，它才能拿到这把锁再继续加锁。
+互斥锁使用太多会导致性能下降，因为线程堵塞在那里，它要不断地查那个锁能不能用了，所以要占用 CPU。
+2. 读写锁
+读写锁限制可同时读，但不可同时写。同理只要有一个线程在写，另外的线程就不能读。
+3. 条件变量
+条件变量是为了解决生产者和消费者的问题，由于用互斥锁和读写锁会到站i线程一直堵塞在那里占用 CPU，而使用信号通知的方式可以先让堵塞的线程进入睡眠方式，等生产者生产出东西后通知消费者，唤醒它进行消费。
+
+### JS 没有线程同步的概念
+
+JS 的多线程无法操作 DOM，没有 window 对象，每个线程的数据都是独立的，主线程传给子线程的数据也是通过拷贝复制，同样的子线程给主线程的数据也是通过拷贝复制，而不是共享同一块内存区域。
+
+## 学会 JS 与面向对象
+
+面向对象是对世界物件的抽象和封装。
+
+### 面向对象的特点
+
+面向对象有三个主要的特点：封装、继承和多态
+
+#### 面向对象编程原则和设计模式
+
+1. 单例模式
+
+确保一个类仅有一个实例，并提供一个访问它的全局访问点
+
+##### 不透明的，知道的人可以通过 Singleton.getInstance() 获取对象，不知道的需要研究代码
+
+```js
+// 1:
+function getSingleton(name) {
+  this.name = name;
+  this.instance = ''
+}
+
+getSingleton.getName = function() {
+  return this.name
+}
+
+getSingleton.getInstance = function(name) {
+  if(!this.instance) {
+    this.instance = new getSingleton(name);
+  }
+  return this.instance
+}
+
+// 2: 闭包的方式
+
+function getSingleton(name) {
+  this.name = name;
+  this.instance = null
+}
+
+getSingleton.prototype.getName = function() {
+  return this.name
+}
+
+getSingleton.prototype.getInstance = (function(){
+  var instance = null
+  return function(name) {
+    if (!this.instance) {
+      this.instance = getSingleton(name)
+    }
+    return instance
+  }
+})
+```
+
+##### 透明的
+
+```js
+function getSingleton(name) {
+  this.name = name
+}
+
+getSingleton.prototype.getName = function() {
+  return this.name;
+}
+var Singleton = (function() {
+  let instance = null;
+  return function(name) {
+    if(!instance) {
+      instance = new getSingleton(name)
+    }
+    return instance
+  }
+})
+```
+
+##### 惯性单例模式；只有当触发创建实例对象的时候，实例对象才能被创建。
+
+```js
+var getSingleton = (function(fn) {
+  let instance = null
+  return function() {
+    return instance || (instance = fn.apply(this, arguments))
+  }
+})()
+
+var  createMask = function() {
+  let mask = document.createElement('div');
+  mask.style.position = 'fixed'
+  mask.style.top = '0'
+  mask.style.left = '0'
+  mask.style.bottom = '0'
+  mask.style.right = '0'
+  mask.style.background = '#000'
+  mask.style.opacity = '0.7'
+  mask.style.display = 'none'
+  mask.style.zIndex = '98'
+  document.body.appendChild('mask)
+
+  mask.onClick = function() {
+    this.style.display = 'none'
+  }
+  return mask
+}
+
+var createLogin = function() {
+  // 创建div元素
+  var login = document.createElement('div');
+  // 设置样式
+  login.style.position = 'fixed';
+  login.style.top = '50%';
+  login.style.left = '50%';
+  login.style.zIndex = '100';
+  login.style.display = 'none';
+  login.style.padding = '50px 80px';
+  login.style.backgroundColor = '#fff';
+  login.style.border = '1px solid #ccc';
+  login.style.borderRadius = '6px';
+
+  login.innerHTML = 'login it';
+
+  document.body.appendChild(login);
+
+  return login;
+};
+
+document.getElementById('btn').onClick = function() {
+  var mask = getSingleton(createMask)()
+  mask.style.display = 'block'
+  var login = getSingleton(createLogin)()
+  login.style.display = 'block'
+}
+```
