@@ -391,3 +391,70 @@ document.getElementById('btn').onClick = function() {
   login.style.display = 'block'
 }
 ```
+
+2. 策略模式
+
+定义一系列的算法，把它们一个个封装起来，并且使他们可以相互替换。
+
+策略模式的优先如下：
+
+- 策略模式利用组合、委托等技术和思想，有效的避免很多 if 条件语句
+- 策略模式提供开放-封闭原则，使代码更容易理解和扩展
+- 策略模式中的代码可以复用。
+
+```js
+var obj = {
+  A: function(salary) {
+    return salary * 4
+  },
+  B: function(salary) {
+    return salary * 3
+  },
+  C: function(salary) {
+    return salary * 2
+  }
+};
+var calculateBonus = function(level, salary) { 
+  return obj[level](salary)
+}
+```
+
+```js
+// 策略对象
+var strategy = {
+  isNotEmpty: function(value, errorMsg) {
+    if(value === '') {
+      return errorMsg
+    }
+  },
+  minLength: function(value, length, errorMsg) {
+    if(value.length < length) {
+      return errorMsg
+    }
+  },
+  mobileFormat: function(value, errorMsg) {
+    if(!/(^1[3|5|9][0-9]{9}$)/.test(value)) {
+      return errorMsg;
+    }
+  }
+};
+var Validator = function() {
+  this.cache = [];  // 保存校验规则
+}
+
+Validator.prototype.add = function(dom, rules) {
+  var self = this;
+  for(var i = 0, rule; rule = rules[i++]; ) {
+    (function(rule) {
+      var strategyAry = rule.strategy.split(':');
+      var errorMsg = rule.errorMsg;
+      self.cache.push(function() {
+        var strategy = strategyAry.shift();
+        strategyAry.unshift(dom.value);
+        strategyAry.push(errorMsg)
+        return strategy[strategy].apply(dom, strategyAry);
+      })
+    })(rule)
+  }
+}
+```
