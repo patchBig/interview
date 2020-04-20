@@ -458,3 +458,42 @@ Validator.prototype.add = function(dom, rules) {
   }
 }
 ```
+
+3. 观察者模式
+
+观察者模式又叫发布订阅模式(Publish/Subscribe)，它定义了一种一对多的关系，让多个观察对象同事监听某一个主题对象，这个主题对象的状态发生变化时就会通知所有的观察者对象，使得他们能够自动更新自己。
+
+使用观察者的好处：
+
+  1. 支持简单的广播通信，自动通知所有已经订阅过的对象
+  2. 页面载入后，目标对象很容易与观察者存在一种动态的关联，增加了灵活性
+  3. 目标对象与观察者之间的抽象耦合关系能够单独扩展以及重用
+
+```js
+var Event = function() {
+  var obj = {
+    events: {}
+  };
+  obj.on = function(key, event) {
+    if (!obj.events[key]) {
+      obj.events[key] = []
+    }
+    obj.events[key].push(event)
+  }
+  obj.once = function(key, event) {
+    obj.events[key] = [];
+    this.on(key, event)
+  }
+  obj.trigger = function(key, params) {
+    if(!obj.events[key]) return key + ' undefined';
+    obj.events[key].forEach(item => {
+      if (Object.prototype.toString.call(item) !== '[object Function]') return false;
+      item.call(this, params)
+    })
+  }
+  obj.off = function(key) {
+    obj.events[key] = []
+  }
+  return obj
+}
+```
