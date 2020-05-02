@@ -596,3 +596,115 @@ export default class OnFire {
 2. JSON/document 型，如 MongoDB，value 按照一定格式，可对 value 的字段做索引，IndexDB 也支持。
 
 在一般非关系型数据库里面，每个数据存储的类型都可以不一样，即每个 key 对应的 value 的 JSON 字段格式可以不一致，所以不存在添加字段的问题，而相同的字段可以创建索引，提高查询效率
+
+## 学习常用的前端算法与数据结构
+
+使用递归的优点是代码简单易懂，缺点是效率上比不上非递归的实现。
+
+给两个数组，需要找出第一个数组里面的重复值和非重复值，即有一个数组保存上一次状态的房源，而另一个数组是当前状态的新房源数据。找到的重复值需要保留，找到非重复值是要删掉的。
+
+### 双重循环
+
+对新数据的每个元素，判断老数据里面是否已经有了，如果有的话则说明是重复值，如果老数据循环一遍都没有找到，则说明是新数据。由于用到了双重循环，所以这个算法的时间复杂度是 O(n^2)，对于百级数据还好，对于千级数据可能会有压力，因为最坏的情况下要比较 1000000 次。
+
+### 使用 set
+
+```js
+let lastHouse = new Set();
+let remainHouses = [];
+let newHouses = [];
+if (lastHouse.has(house[i].id)) {
+  remainHouses.push(house[i])
+}
+else {
+  newHouses.push(house[i])
+}
+```
+
+使用 Set 和使用 Array 的区别在于可以减少一重循环，调用 Set.prototype.has 的函数。Set 一般是使用 红黑树实现的，红黑树是一种平衡查找二叉树，它的查找时间复杂度为 O(logN)。所以时间浮渣度进行了改进。从 O(N) 变成了 O(logN)，而总体时间从 O(N^2) 变成了 O(N*logN)
+
+### 使用 Map
+
+```ecmascript 6
+let lastHouse = new Map();
+
+if (lastHouse.has(house.id))
+```
+
+哈希的查找复杂度为 O(1)，因此总的时间复杂度为 O(N)，Set/Map 都是这样，代价是哈希的存储时间通常为数据大小的两倍。
+
+### 数组去重
+
+1. 使用 Set + Array
+
+```ecmascript 6
+function uniqueArray(arr) {
+  return Array.from(new Set(arr))
+}
+```
+
+优点: 代码简洁，速度快，时间复杂度为 O(N)；
+缺点: 需要一个额外的 Set 和 Array 的存储空间，空间复杂度为 O(N)。
+
+2. 使用 splice 去重
+
+优点：不需要使用额外的存储空间，空间复杂度为 O(1)
+缺点：需要频繁的内存移动，双重循环，时间复杂度为 O(N^2)
+
+splice 删除元素使用的是**内存移动**，并不是写一个 for 循环一个个复制，内存移动的速度还是很快的，1s 可以达到几个 G 级别。
+
+3. 只用 Array
+
+时间复杂度为 O(N^2)，空间复杂度为 O(N)
+
+4. 使用 Object + Array
+
+使用 Object[key] 进行哈希查找，所以它的时间复杂度为 O(N)，空间复杂度为 O(N)
+
+### 节流函数
+
+```js
+function throttling(method, time) {
+  if (typeof method.aId === undefined) {
+    method.call(context);
+    method.aId = 0
+  }
+  if (!method.aId) {
+    method.aId = setTimeout(() => {
+      method()
+      method.aId = 0;
+    }, time)
+  }
+}
+```
+
+### 图像处理
+
+使用 CSS 的 filter 属性，支持吧图片置成灰色的
+
+```css
+img {
+    filter: grayscale(100%);
+}
+```
+
+用 canvas 获取图片数据
+
+```js
+let img = new Image()
+img.src = './test.png'
+img.onload = function() {
+  ctx.drawImage(this, 10, 10)
+}
+
+function blackWhite() {
+  let imgData = ctx.getImageData(10, 10, 31, 30)
+  ctx.putImageData(imgData, 50, 10)
+}
+
+function getImgDataURL() {
+  let data = ctx.toDataURL()
+  console.log(data);
+}
+```
+
