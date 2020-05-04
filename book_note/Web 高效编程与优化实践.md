@@ -708,3 +708,192 @@ function getImgDataURL() {
 }
 ```
 
+toDataURL 是 canvas 对象自身的方法，这个方法会将 canvas 的内容提取出一张图片（base64 编码）。是受同源策略限制的
+
+## 同源策略和跨域
+
+因为同源策略的限制，不同域名、协议或者端口无法直接进行 AJAX 请求。同源策略只针对于浏览器端，浏览器一旦检测到请求的结果的域名不一致后，会阻塞请求结果。这里注意，**跨域请求是可以发出去的，但是请求响应 response 被浏览器阻塞了**。
+
+如果要带上 cookie 的话设置 xhr 的 withCredentials 属性为 true。
+
+### CSRF 攻击
+
+由于同源策略的限制，跨域的 AJAX 请求不会带上 cookie，然后 script/iframe/img 等标签却支持跨域的，所以在请求的时候是会带上 cookie 的。
+
+防 CSRF 攻击的策略就是将 token 添加到请求的参数里面，也就是说每个需要验证身份的请求都要显式地带上 token 值，或者是写的请求不能支持 get。
+
+### 跨越请求
+
+1. 跨域资源共享 (CORS)
+
+Access-Control-Allow-Origin 就是所谓的资源共享了，它的值 * 表示允许任意网站想这个接口请求数据，也可以设置成指定的域名。
+
+2. JSONP
+
+原理是浏览器告诉服务一个回调函数的名称，服务在返回的 script 里面调用这个回调函数，同时传入客户端需要的数据，这样返回的代码就能在浏览器上执行了。
+
+JSONP 和 CORS 相比较，缺点是只支持 get 类型，无法支持 post 等其他类型，必须完全信任提供的服务的第三方，优点是兼容古董级别的浏览器。
+
+3. 子域跨父域
+
+子域跨父域是支持的，但是需要显式将子域的域名改成父域的。例如 mail.mysite.com 要访问 mysite.com 的 iframe 数据，那么要在 mail.mysite.com 脚本里需要执行如下代码：
+
+```js
+document.domain = 'mysite.com'
+```
+
+这样就可以和父域进行交互，但是向父域请求还是会跨域，因为这种更改 domain 只是支持 client side，并不是 client to server。
+
+4. iframe 跨父窗口
+
+父域无法直接读取不同源的 iframe 的 DOM 内容以及监听事件，但是 iframe 可以调用父窗口提供的 api。iframe 可以通过 window.parent 得到父窗口的 window 对象，然后父窗口定义一个全局对象宫 iframe 调用。
+
+5. window.postMessage
+
+通过 window.postMessage，父窗口向 iframe 传递一个消息，而 iframe 中监听消息事件。
+
+postMessage 执行的上下文必须是接收信息的 window，传递两个参数，第一个是数据，第二个是目标窗口。
+
+```js
+window.onload = function() {
+  window.frames[0].postMessage('hello, this is from http://localhost:8000/', 'http://server.com:9000/')
+}
+
+function receiveMessage(event) {
+  let origin = event.origin || event.originalEvent.origin;
+  if (origin !== 'http://localhost:8000') { return }
+  console.log('receiveMessage: ', event.data);
+}
+
+window.addEventListener('message', receiveMessage);
+```
+
+iframe 也可以向父窗口发送消息
+
+```js
+window.parent.postMessage('hello, this is from http://server/com:9000', 'http://localhost:8000')
+```
+
+## 掌握前端本地文件操作和上传
+
+[代码详情](https://codepen.io/yingzhe/pen/eYpGxjz?editors=0010)
+
+文件的路径是一个假的路径，也及时说在浏览器中无法获取到文件的真实存放地址。同时 FormData 打印出来是一个空的 Object，但并不是说它的内容是空的，只是它对前端开发人员是透明的，无法查看、修改、删除里面的内容，只能 append 添加字段。
+
+使用 FileReader 可以读取整个文件的内容，用户选择文件后，input.files 就可以得到用户选中的文件。
+
+如果 xhr.send 是 FormData 类型，会自动设置 enctype。如果用默认表单提交上传文件的话就得在 form 上设置这个属性，因为上传文件只能使用 post 的这种编码。
+
+### css 居中方式
+
+1. 垂直居中
+
+借助 table-cell 的垂直居中，给父容器添加如下代码：
+
+```css
+.my-container {
+    display: table-cell;
+    vertical-align: middle;
+}
+```
+
+为了让中间的内容能够在 container 里上下居中，可以设置文字的 line-height 为 container 的高度，那么文字就上下居中了，由于照片和文字是垂直居中的，所以照片在 container 里也上下居中了。
+
+```css
+.my-container span {
+    vertical-align: middle;
+    line-height: 150px;
+}
+```
+
+如果需要垂直居中一个比 div 里的比 div 高度小的照片，可以添加一个元素，让他的 line-height 等于 div 的高度。
+
+还有一种方法是借助 absolute 定位和 margin: auto，
+
+```css
+.my-container {
+    position: relative;
+}
+.my-container img {
+    position:absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+```
+
+[照片居中布局](https://codepen.io/yingzhe/pen/rNOGRLz)
+
+照片有一边和 container 一样高，另外一边按照照片的比例缩放，照片居中显示，超出的截断，这种应该叫占满布局，这种情况，只需要吧 left/right/bottom/top 设置一个很大的负值即可。
+
+```html
+<!--如果不设置容易的 line-height 为 0，下方将会有留白-->
+<div class="my-container" style="border: 1px solid #ccc; width: 232px;line-height: 0">
+    <img src="" alt="">
+    <span>photo</span>
+</div>
+```
+
+### 常用的 CSS 布局技术
+
+#### 三栏布局-左右栏各 100px，中间随浏览器的宽度自适应
+
+1. table 布局
+
+设置 table 的宽度为 100%，三个 td，第一个和第三个固定宽度为 100px，那么中间那个就会自适应
+
+2. float 布局
+
+[flat 三栏布局](https://codepen.io/yingzhe/pen/rNOGRLz?editors=1100)
+
+flex-shrink 的作用是定义收缩比例，容器内的子元素宽度若超出容器的宽度时，将按比例收缩子元素的宽度，使得宽度和等于容器的宽度。将前面三个 span/img 的 flex-shrink 设置为 0，而 p 的 flex-shrink 设置为 1，这样子使得溢出的宽度都在 p 标签减去，就能够达到 p 标签自适应的效果。
+
+使用 flex 兼容 IE
+
+```js
+let div = document.createElement('div')
+div.style.display = 'flex'
+if(div.style.display !== 'flex' && div.style.display !== '-webkit-flex') {
+  document.getElementsByTagName('body')[0].className += ' no-flex'
+}
+```
+
+考虑到浏览器可能不支持 grid，那么你可以用 @supports
+
+```css
+@supports (display: grid) {
+    div {
+        display: grid;
+    }
+}
+
+@supports not(display: grid) {
+    div { float: left;}
+}
+```
+
+## 明白移动端 click 及自定义事件
+
+设置 viewport
+
+```html
+<meta name="viewport" content="width=device-width">
+```
+
+即把 viewport 设置成设备的实际像素，那么就不会有 300ms 的延迟。
+
+如果设置 initial-scale=1.0，在 Chrome 上是可以生效的，但是 Safari 上不会。
+
+```html
+<meta name="viewport" content="initial-scale=1.0">
+```
+
+第三种是设置 CSS，这样也可以取消掉 300ms 延迟，Chrome 和 Safari 都可以生效。
+
+```css
+html {
+    touch-action: manipulation;
+}
+```
